@@ -1,3 +1,4 @@
+use std::ops::Add;
 use crate::board::*;
 
 /// A heuristic function to estimate the cost of reaching the goal state from a given board.
@@ -22,10 +23,37 @@ impl Heuristic {
             // blind heuristic always returns 0
             Heuristic::Blind => 0,
             Heuristic::Hamming => {
-                todo!()
+                let mut misplaced_count = 0;
+
+                for x in 0..N {
+                    for y in 0..N {
+                        if board.value_at(x, y) != Board::GOAL.value_at(x, y) {
+                            misplaced_count += 1;
+                        }
+                    }
+                }
+
+                misplaced_count - 1
             }
             Heuristic::Manhattan => {
-                todo!()
+                let mut distances_sum = 0;
+
+                for x in 0..N {
+                    for y in 0..N {
+                        let cell = board.value_at(x, y);
+
+                        if (cell == EMPTY_CELL) {
+                            continue;
+                        }
+
+                        let pos = board.position(cell);
+                        let expected_pos = Board::GOAL.position(cell);
+
+                        distances_sum += pos.1.abs_diff(expected_pos.1) + pos.0.abs_diff(expected_pos.0);
+                    }
+                }
+
+                distances_sum as u32
             }
         }
     }
@@ -38,8 +66,9 @@ mod tests {
     fn test_heuristic() {
         use super::*;
         let board = Board::new([[8, 7, 3], [2, 0, 5], [1, 4, 6]]);
+        println!("{board} {}", Board::GOAL);
         assert_eq!(Heuristic::Blind.estimate(&board), 0);
-        assert_eq!(Heuristic::Hamming.estimate(&board), todo!());
-        assert_eq!(Heuristic::Manhattan.estimate(&board), todo!());
+        assert_eq!(Heuristic::Hamming.estimate(&board), 7);
+        assert_eq!(Heuristic::Manhattan.estimate(&board), 14);
     }
 }

@@ -10,7 +10,14 @@ mod search;
 use board::*;
 use heuristics::*;
 use search::*;
+use Direction::*;
 
 fn main() {
-    println!("I ain't doing nothing yet.")
+    let board = Board::new([[1, 2, 3], [4, 8, 5], [0, 7, 6]]);
+
+    let plan = [Right, Up, Right, Down];
+
+    if board.is_valid_plan(&plan) {
+        board.play(&plan);
+    }
 }

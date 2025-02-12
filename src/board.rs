@@ -112,7 +112,15 @@ impl Board {
     /// Returs `true` if the given sequence of actions is a valid plan that leads to the goal state.
     pub fn is_valid_plan(&self, actions: &[Direction]) -> bool {
         let mut board = *self;
-        todo!("replay each of the moves in the actions array and see if ends in the goal state")
+
+        for action in actions {
+            match board.apply(*action) {
+                Some(new_board) => board = new_board,
+                None => (),
+            }
+        }
+
+        board == Board::GOAL
     }
 }
 
@@ -251,10 +259,10 @@ mod tests {
         assert_eq!(board.position(EMPTY_CELL), (2, 0));
         assert_eq!(board.value_at(2, 0), EMPTY_CELL);
 
-        assert_eq!(board.value_at(1, 1), todo!());
-        assert_eq!(board.value_at(2, 2), todo!());
-        assert_eq!(board.position(3), todo!());
-        assert_eq!(board.position(5), todo!());
+        assert_eq!(board.value_at(1, 1), 5);
+        assert_eq!(board.value_at(2, 2), 8);
+        assert_eq!(board.position(3), (0, 2));
+        assert_eq!(board.position(5), (1, 1));
     }
 
     #[test]
@@ -265,9 +273,15 @@ mod tests {
             Some(Board::new([[1, 2, 3], [0, 5, 6], [4, 7, 8]]))
         );
         // what is the result of moving the empty cell right? was the `board` binding modified by the apply method?
-        assert_eq!(board.apply(Direction::Right), todo!());
+        assert_eq!(
+            board.apply(Direction::Right),
+            Some(Board::new([[1, 2, 3], [4, 5, 6], [7, 0, 8]]))
+        );
         // what is the result of moving the empty cell left?
-        assert_eq!(board.apply(Direction::Left), todo!());
+        assert_eq!(
+            board.apply(Direction::Left),
+            None
+        );
     }
 
     #[test]
@@ -281,7 +295,7 @@ mod tests {
         // a valid suboptimal plan
         assert!(board.is_valid_plan(&[Right, Up, Down, Right]));
 
-        // invalid plan (does not ends in the goal state)
+        // invalid plan (does not end in the goal state)
         assert!(!board.is_valid_plan(&[Right, Up, Down, Right, Up]));
         // invalid plan (moves the empty cell out of the board)
         assert!(!board.is_valid_plan(&[Left]));
