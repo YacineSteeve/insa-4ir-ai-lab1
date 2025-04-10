@@ -1,3 +1,4 @@
+use std::cmp::min;
 use std::ops::Add;
 use crate::board::*;
 
@@ -27,13 +28,15 @@ impl Heuristic {
 
                 for x in 0..N {
                     for y in 0..N {
-                        if board.value_at(x, y) != Board::GOAL.value_at(x, y) {
+                        let cell = board.value_at(x, y);
+
+                        if cell != EMPTY_CELL && cell != Board::GOAL.value_at(x, y) {
                             misplaced_count += 1;
                         }
                     }
                 }
 
-                misplaced_count - 1
+                misplaced_count
             }
             Heuristic::Manhattan => {
                 let mut distances_sum = 0;
@@ -66,7 +69,6 @@ mod tests {
     fn test_heuristic() {
         use super::*;
         let board = Board::new([[8, 7, 3], [2, 0, 5], [1, 4, 6]]);
-        println!("{board} {}", Board::GOAL);
         assert_eq!(Heuristic::Blind.estimate(&board), 0);
         assert_eq!(Heuristic::Hamming.estimate(&board), 7);
         assert_eq!(Heuristic::Manhattan.estimate(&board), 14);

@@ -40,7 +40,7 @@ pub fn search(init_state: Board, heuristic: Heuristic) -> (Option<Vec<Direction>
 
     let mut path: Vec<Direction> = Vec::new();
 
-    heap.insert(init_state, 0);
+    heap.insert(init_state, 0); //heuristic.estimate(&init_state));
     costs.insert(init_state, 0);
     parent_actions.insert(init_state, None);
 
@@ -87,7 +87,7 @@ pub fn search(init_state: Board, heuristic: Heuristic) -> (Option<Vec<Direction>
                             if better_path {
                                 costs.insert(new_board, new_cost);
                                 parent_actions.insert(new_board, Some((board, direction)));
-                                heap.insert(new_board, new_cost);
+                                heap.insert(new_board, new_cost); //heuristic.estimate(&new_board));
                             }
                         },
                         None => continue

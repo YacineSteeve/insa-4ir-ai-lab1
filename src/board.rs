@@ -126,7 +126,7 @@ impl Board {
 
 // Specifies how to display a board in a human-readable way.
 // This is what is used when you use the `{}` format specifier in a `println!` macro.
-impl std::fmt::Display for Board {
+impl Display for Board {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "\n┏━━━┳━━━┳━━━┓\n")?;
         for i in 0..N {
@@ -175,7 +175,7 @@ impl Direction {
     }
 }
 
-// Implements prettry printing for the `Direction` enum.
+// Implements pretty printing for the `Direction` enum.
 // This is what is used when you use the `{}` format specifier in a `println!` macro.
 impl Display for Direction {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
